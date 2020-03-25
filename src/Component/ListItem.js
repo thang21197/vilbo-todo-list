@@ -5,16 +5,40 @@ import ItemEdit from './ItemEdit';
 class ListItem extends Component {
     componentWillMount(){
       this.setState({
-        items:this.props.items
+        items:this.props.items,
+        arrayLevel:this.props.arrayLevel
       });
     } 
-    renderItem = () =>{
-      let {items}=this.state;
-      return items.map((item,index)=>{
-        return  (<Item 
-          item={item} 
-          index={index}/>);
+    handleEditClickCancel=()=>{
+      this.setState({
+        itemEditId:''
       })
+    }
+    renderItem = () =>{     
+      let {items,itemEditId,itemEditIndex,itemEditLevel,itemEditName,arrayLevel}=this.state;
+      if(items.length === 0) {
+        return <Item item={0} />
+      }
+      return items.map((item,index)=>{
+        if(item.id===itemEditId){
+          return (<ItemEdit
+          key={index}
+          index={itemEditIndex}
+          itemEditName={itemEditName}
+          itemEditLevel={itemEditLevel}
+          arrayLevel={arrayLevel}
+          handleEditClickCancel={this.handleEditClickCancel}
+          handleEditInputChange={this.props.handleEditInputChange}
+          />)
+        }
+        return  (<Item 
+          key={index}
+          item={item} 
+          index={index}
+          handleShowAlert={this.props.handleShowAlert}
+          handleEditItem={this.props.handleEditItem}
+          />);
+       })
     }
     render() {
         return (
@@ -31,7 +55,7 @@ class ListItem extends Component {
         </thead>
         <tbody>
           {this.renderItem()}
-          <ItemEdit/>
+          {/* <ItemEdit/> */}
         </tbody>
       </table>
     </div>
