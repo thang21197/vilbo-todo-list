@@ -3,13 +3,30 @@ import Item from './Item';
 import ItemEdit from './ItemEdit';
 
 class ListItem extends Component {
-    componentWillMount(){
-      this.setState({
+    constructor(props) {
+      super(props);
+      this.state={
         items:this.props.items,
-        arrayLevel:this.props.arrayLevel
+        arrayLevel:this.props.arrayLevel,
+        itemEditId:''
+      }
+    }
+    handleEditItem=(itemEdit,index)=>{
+      this.setState({
+        itemEditIndex:index,
+        itemEditId:itemEdit.id,
+        itemEditName:itemEdit.name,
+        itemEditLevel:itemEdit.level
       });
-    } 
+      this.props.itemEditId(itemEdit.id);
+    }
     handleEditClickCancel=()=>{
+      this.setState({
+        itemEditId:''
+      })
+    }
+    handleEditClickSubmit=()=>{
+      this.props.handleEditClickSubmit();
       this.setState({
         itemEditId:''
       })
@@ -29,6 +46,8 @@ class ListItem extends Component {
           arrayLevel={arrayLevel}
           handleEditClickCancel={this.handleEditClickCancel}
           handleEditInputChange={this.props.handleEditInputChange}
+          handleEditClickSubmit={this.handleEditClickSubmit}
+          handleEditSelectChange={this.props.handleEditSelectChange}
           />)
         }
         return  (<Item 
@@ -36,7 +55,7 @@ class ListItem extends Component {
           item={item} 
           index={index}
           handleShowAlert={this.props.handleShowAlert}
-          handleEditItem={this.props.handleEditItem}
+          handleEditItem={this.handleEditItem}
           />);
        })
     }

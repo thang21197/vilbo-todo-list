@@ -8,6 +8,7 @@ import ListItem from './Component/ListItem';
 import Items from './mockdata/Item';
 import SweetAlert from 'sweetalert-react';
 import './../node_modules/sweetalert/dist/sweetalert.css';
+import { v4 as uuidv4 } from 'uuid';
 
 class App extends Component {
   constructor(props){
@@ -26,15 +27,13 @@ class App extends Component {
       showAlert: false,
       titleAlert:'',
       alertId:'',
-      itemIdEdit:'',
-      arrayLevel:arrayLevel   
+      arrayLevel:arrayLevel ,
+      nameEdit:'',
+      nameLevel:'',
+      showForm:false,
+      valueItem:'',
+      levelItem:0  
     }
-  }
-  handleEditItem=(item,index)=>{
-    this.setState({
-      itemEdit:item,
-      itemIndex:index
-    });  
   }
   handleShowAlert=(titleAlert,itemId)=>{
     this.setState({
@@ -58,7 +57,72 @@ class App extends Component {
     });
   }
   handleEditInputChange= (value) =>{
-    console.log(value);
+    this.setState({
+      nameEdit:value
+    });
+  }
+  handleEditSelectChange= (value) =>{
+    this.setState({
+      levelEdit:value
+    });
+  }
+  getEditId = (value) =>{
+    this.setState({
+      idEdit:value
+    });
+  }
+  handleEditClickSubmit = () =>{
+     let {nameEdit,levelEdit,items,idEdit}=this.state;
+     if(items.length>0){
+       for (let i = 0; i < items.length; i++) {
+          if(items[i].id===idEdit){
+            items[i].name= nameEdit!==''? nameEdit:items[i].name;
+            items[i].level= levelEdit!==''? levelEdit:items[i].level;
+            break;
+          }
+       }
+       this.setState({
+        nameEdit:'',
+        nameLevel:'' 
+       });
+     }
+  }
+  hanldeShowForm= () =>{
+    this.setState({
+      showForm:!this.state.showForm
+    });
+  }
+  handleFormInputChange = (value) =>{
+    this.setState({
+      valueItem:value
+    });  
+  }
+  handleFormSelectChange = (value) =>{
+    this.setState({
+      levelItem:value
+    });
+  }
+  handleFormClickCancel = () =>{
+    this.setState({
+      valueItem:'',
+      levelItem:0  
+    });
+  }
+  handleFormClickSubmit = () =>{
+    let {valueItem,levelItem}=this.state;
+    if(valueItem.trim() === '') return false;
+    let newItem={
+      id:uuidv4(),
+      name:valueItem,
+      level:+levelItem
+    };
+    Items.push(newItem);
+    this.setState({
+      items: Items,
+      valueItem: '',
+      levelItem: 0,
+      showForm: false
+   });
   }
   render() {
     return (
@@ -83,12 +147,21 @@ class App extends Component {
           <Sort/>
         </div>
         <div className="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-          <button type="button" className="btn btn-info btn-block marginB10">Add Item</button>
+          <button type="button" className="btn btn-info btn-block marginB10" onClick={this.hanldeShowForm}>{ this.state.showForm ? 'Close Item':'Add Item'}</button>
         </div>
       </div>
       <div className="row marginB10">
         <div className="col-md-offset-7 col-md-5">
-          <Form/>
+          <Form 
+          showFrom={this.state.showForm}
+          arrayLevel={this.state.arrayLevel}
+          valueItem={this.state.valueItem}
+          handleFormInputChange={this.handleFormInputChange}
+          levelItem={this.state.levelItem}
+          handleFormSelectChange={this.handleFormSelectChange}
+          handleFormClickCancel={this.handleFormClickCancel}
+          handleFormClickSubmit ={this.handleFormClickSubmit}
+          />
         </div>
       </div>
      <ListItem 
@@ -98,7 +171,9 @@ class App extends Component {
      handleShowAlert={(titleAlert,itemId) =>{this.handleShowAlert(titleAlert,itemId)}}
      arrayLevel={this.state.arrayLevel}
      handleEditInputChange={this.handleEditInputChange}
-     handleEditItem={(itemEdit,index) =>{this.handleEditItem(itemEdit,index)}}
+     handleEditClickSubmit={this.handleEditClickSubmit}
+     handleEditSelectChange={this.handleEditSelectChange}
+     itemEditId={this.getEditId}
      />
     </div>
     );
