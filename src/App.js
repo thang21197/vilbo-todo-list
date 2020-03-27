@@ -9,6 +9,7 @@ import Items from './mockdata/Item';
 import SweetAlert from 'sweetalert-react';
 import './../node_modules/sweetalert/dist/sweetalert.css';
 import { v4 as uuidv4 } from 'uuid';
+import { orderBy as orderByld } from 'lodash';
 
 class App extends Component {
   constructor(props){
@@ -32,7 +33,9 @@ class App extends Component {
       nameLevel:'',
       showForm:false,
       valueItem:'',
-      levelItem:0  
+      levelItem:0,
+      sortType:'',
+      sortOrder:''  
     }
   }
   handleShowAlert=(titleAlert,itemId)=>{
@@ -124,6 +127,16 @@ class App extends Component {
       showForm: false
    });
   }
+  handleSort = (sortType,sortOrder) =>{
+    this.setState({
+      sortType:sortType,
+      sortOrder:sortOrder
+    });
+    let {items} =this.state
+    this.setState({
+      items:orderByld(items,[sortType],[sortOrder])
+    });
+  }
   render() {
     return (
       <div className="container">
@@ -144,7 +157,11 @@ class App extends Component {
           <Search/>
         </div>
         <div className="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-          <Sort/>
+          <Sort
+          sortType={this.state.sortType}
+          sortOrder={this.state.sortOrder}
+          handleSort={this.handleSort}
+          />
         </div>
         <div className="col-xs-5 col-sm-5 col-md-5 col-lg-5">
           <button type="button" className="btn btn-info btn-block marginB10" onClick={this.hanldeShowForm}>{ this.state.showForm ? 'Close Item':'Add Item'}</button>
