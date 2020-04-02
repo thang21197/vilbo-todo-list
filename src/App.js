@@ -10,8 +10,12 @@ import SweetAlert from 'sweetalert-react';
 import './../node_modules/sweetalert/dist/sweetalert.css';
 import { v4 as uuidv4 } from 'uuid';
 import { orderBy as orderByld } from 'lodash';
+import fs from 'fs';
+import Pagination from "react-js-pagination";
+import Item from './Component/Item';
 
 class App extends Component {
+  
   constructor(props){
     super(props);
     let arrayLevel=[];
@@ -35,8 +39,25 @@ class App extends Component {
       valueItem:'',
       levelItem:0,
       sortType:'',
-      sortOrder:''  
+      sortOrder:'',
+      activePage: 1,
+      itemsCountPerPage:10,
+      pageRangeDisplayed:5
     }
+  }
+  componentWillMount(){
+    var {activePage,itemsCountPerPage}=this.state;
+    var indexOfLastNews = activePage*itemsCountPerPage;
+    var indexOfFirstNews = indexOfLastNews -itemsCountPerPage;
+    var currentTodos = Items.slice(indexOfFirstNews,indexOfLastNews);
+    this.setState({items:currentTodos});
+  }
+  handlePageChange(pageNumber) {
+    var {activePage,itemsCountPerPage}=this.state;
+    var indexOfLastNews = activePage*itemsCountPerPage;
+    var indexOfFirstNews = indexOfLastNews -itemsCountPerPage;
+    var currentTodos = Items.slice(indexOfFirstNews,indexOfLastNews);
+    this.setState({activePage: pageNumber,items:currentTodos});
   }
   handleShowAlert=(titleAlert,itemId)=>{
     this.setState({
@@ -46,7 +67,7 @@ class App extends Component {
     });
   }
   hanldeDeleteItem=()=>{
-    let {alertId, items} = this.state;
+    let {alertId,items} = this.state;
     if(items.length>0){   
       for (let i = 0; i < items.length; i++) {
         if(items[i].id===alertId){
@@ -192,6 +213,13 @@ class App extends Component {
      handleEditSelectChange={this.handleEditSelectChange}
      itemEditId={this.getEditId}
      />
+      <Pagination
+          activePage={this.state.activePage}
+          itemsCountPerPage={this.state.itemsCountPerPage}
+          totalItemsCount={Items.length}
+          pageRangeDisplayed={this.state.pageRangeDisplayed}
+          onChange={this.handlePageChange.bind(this)}
+        />
     </div>
     );
   }
