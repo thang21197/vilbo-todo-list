@@ -1,6 +1,15 @@
 import React, { Component } from 'react';
 
 class Sort extends Component {
+    renderSort = () =>{
+      let {sortType,sortOrder}=this.props
+      return (<span className="label label-success label-medium">
+                {sortType}-{sortOrder}
+              </span>)
+    }
+    handleClick = (sortType,sortOder) =>{
+      this.props.handleSort(sortType,sortOder)
+    }
     render() {
         return (
         <div className="dropdown">
@@ -8,13 +17,13 @@ class Sort extends Component {
             Sort by <span className="caret" />
           </button>
           <ul className="dropdown-menu">
-            <li><a href="/" role="button">Name ASC</a></li>
-            <li><a href="/" role="button">Name DESC</a></li>
+            <li onClick={() =>{this.handleClick('name','asc')}}><a  role="button" role="button">Name ASC</a></li>
+            <li onClick={() =>{this.handleClick('name','desc')}}><a  role="button" role="button">Name DESC</a></li>
             <li role="separator" className="divider" />
-            <li><a href="/" role="button">Level ASC</a></li>
-            <li><a href="/" role="button">Level DESC</a></li>
+            <li onClick={() =>{this.handleClick('level','asc')}}><a  role="button" role="button">Level ASC</a></li>
+            <li onClick={() =>{this.handleClick('level','desc')}}><a  role="button" role="button">Level DESC</a></li>
           </ul>
-          <span className="label label-success label-medium">NAME - DESC</span>
+          {this.renderSort()}
         </div>
         );
     }

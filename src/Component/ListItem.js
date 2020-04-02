@@ -32,7 +32,8 @@ class ListItem extends Component {
       })
     }
     renderItem = () =>{     
-      let {items,itemEditId,itemEditIndex,itemEditLevel,itemEditName,arrayLevel}=this.state;
+      let {itemEditId,itemEditIndex,itemEditLevel,itemEditName,arrayLevel}=this.state;
+      let {items}=this.props
       if(items.length === 0) {
         return <Item item={0} />
       }
